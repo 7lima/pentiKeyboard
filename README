@@ -1,0 +1,46 @@
+# 06apr19abu
+# (c) Software Lab. Alexander Burger
+
+
+   Building PentiKeyboard
+   ----------------------
+
+First make sure to have Java-8 installed
+
+   $ update-alternatives --config java  # 2
+
+Then create a directory "android_sdk" in some convenient place
+
+   $ mkdir android_sdk
+   $ cd android_sdk
+
+Download Android Command Line Tools for Linux. For this, go to
+
+   https://developer.android.com/studio/command-line
+
+and download the sdk-tools ZIP file for Linux. Unpack it
+
+   $ unzip sdk-tools-linux-<xxx>.zip
+
+and use the SDK Manager to install the following packages:
+
+   $ tools/bin/sdkmanager "platform-tools"
+   $ tools/bin/sdkmanager "platforms;android-28"
+   $ tools/bin/sdkmanager "build-tools;28.0.3"
+   $ tools/bin/sdkmanager "tools"
+
+You will need to create your own keystore for signing the APK later
+
+   $ keytool -genkeypair -validity 365 -keystore key.jks -keyalg RSA -keysize 2048
+
+Fetch PentiKeyboard.tgz from software-lab.de and extract it
+
+   $ tar xfz PentiKeyboard.tgz
+
+Then change to this directory, and build the PentiKeyboard APK:
+
+   $ cd PentiKeyboard/
+   $ mkdir obj
+   $ ./mk.pentiKeyboard
+
+This results in an installable APK file "pentiKeyboard.apk".

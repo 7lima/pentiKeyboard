@@ -1,0 +1,45 @@
+# 18dec21 Software Lab. Alexander Burger
+
+## openjdk-8-jdk
+
+VERS=93
+NAME=21.12.18
+
+MINSDK=23
+TARGET=30
+TOOLS=../build-tools/28.0.3
+PLATFORM=../platforms/android-28
+
+$TOOLS/aapt package -f \
+   -m -J src \
+   -M AndroidManifest.xml \
+   -S res \
+   -I $PLATFORM/android.jar
+
+javac -d obj \
+   -classpath src \
+   -bootclasspath $PLATFORM/android.jar \
+   src/de/software_lab/pentikeyboard/*.java
+
+$TOOLS/dx --dex  --output=classes.dex  obj
+
+$TOOLS/aapt package -f \
+   -m -F unaligned.apk \
+   --version-code $VERS \
+   --version-name $NAME \
+   --min-sdk-version $MINSDK \
+   --target-sdk-version $TARGET \
+   -M AndroidManifest.xml \
+   -S res \
+   -I $PLATFORM/android.jar
+
+$TOOLS/aapt add unaligned.apk classes.dex
+## $TOOLS/aapt list unaligned.apk
+
+$TOOLS/zipalign -f -z  4  unaligned.apk  pentiKeyboard.apk
+$TOOLS/apksigner sign  --ks ../key.jks  pentiKeyboard.apk
+
+rm \
+   src/de/software_lab/pentikeyboard/R.java \
+   obj/de/software_lab/pentikeyboard/*.class \
+   classes.dex unaligned.apk
